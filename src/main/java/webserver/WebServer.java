@@ -5,10 +5,10 @@ import java.net.Socket;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+// 최초 실행시점
 public class WebServer {
     private static final Logger log = LoggerFactory.getLogger(WebServer.class);
-    private static final int DEFAULT_PORT = 8080;
+    private static final int DEFAULT_PORT = 8080;  // 여기서 8080포트로 설정했기에, aws에서 8080 포트를 추가해둠
 
     public static void main(String args[]) throws Exception {
         int port = 0;
