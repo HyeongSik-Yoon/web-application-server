@@ -13,6 +13,8 @@ import org.junit.Test;
 
 import com.google.common.io.FileBackedOutputStream;
 
+import webserver.HttpRequest;
+
 public class HttpRequestTest {
 	private String testDirectory = "./src/test/resources";
 	
