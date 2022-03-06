@@ -33,10 +33,10 @@ public class HttpRequest {
 				return;
 			}
 			
-			processRequestLine(line);  // 첫번째 줄처리완료
+			requestLine  = new RequestLine(line);  // 첫번째 줄처리완료
 			
 			line = br.readLine();  // 첫번째 줄은 저장(서버내), 2번째 줄처리
-			while (!line.equals("")) {
+			while (!line.equals("") ) { //
 				log.debug("header : {}", line);
 				String[] tokens = line.split(":");
 				headers.put(tokens[0].trim(), tokens[1].trim());
@@ -44,44 +44,25 @@ public class HttpRequest {
 				
 			}
 			
-			if("POST".equals(method)) {
+			if("POST".equals(getMethod().toString())) {
 				String body = IOUtils.readData(br, Integer.parseInt(headers.get("Content-Length")));
 				params = HttpRequestUtils.parseQueryString(body);
+			} else {
+				params = requestLine.getParams();
 			}
 		} catch (IOException io) {
 			log.error(io.getMessage());
 		}
 	}
 	
-	private void processRequestLine(String requestLine) {
-		log.debug("request line : {}", requestLine);
-		String[] tokens = requestLine.split(" ");
-		method = tokens[0];
-		
-		if("POST".equals(method)) {
-			path = tokens[1];
-			return;
-		}
-		
-		int index = tokens[1].indexOf("?");  // 12
+	
 
-		// indexof  내가 지정한 문자 조건으로 입맛에 맞게 위치를 지정할 수 있음, 실제 자르는 것은 substring
-		if(index == -1) {  // indexOf 메서드에서 특정 문자열을 찾는데, 특정문자열이 없다는 것, 즉 여기선 물음표가 없다는것
-			path = tokens[1];  // /user/create
-		} else {
-			path = tokens[1].substring(0, index);  // /user/create? ?을 기준으로, 처음인 /부터 마지막인 ?이전까지 잘라서 경로를 만들어준다.
-			params = HttpRequestUtils.parseQueryString(tokens[1].substring(index +1));  // ? 이후, userid, u이후부터 값을 잘라서 Map으로 반환하는데, 
-			// 파라미터값, userId=javajigi ---> <userid, javajigi>
-
-		}
-	}
-
-	public String getMethod() {
-		return method;
+	public HttpMethod getMethod() {
+		return requestLine.getMethod();
 	}
 
 	public String getPath() {
-		return path;
+		return requestLine.getPath();
 	}
 
 	public String getHeader(String name) {
@@ -89,7 +70,7 @@ public class HttpRequest {
 	}
 
 	public String getParams(String name) {
-		return headers.get(name);
+		return params.get(name);
 	}
 	
 

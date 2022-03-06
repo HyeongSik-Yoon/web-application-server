@@ -13,10 +13,11 @@ import org.junit.Test;
 
 import com.google.common.io.FileBackedOutputStream;
 
+import webserver.HttpMethod;
 import webserver.HttpRequest;
 
 public class HttpRequestTest {
-	private String testDirectory = "./src/test/resources";
+	private String testDirectory = "./src/test/resources/";
 	
 	@Test
 	public void request_GET() throws Exception {
@@ -25,10 +26,10 @@ public class HttpRequestTest {
 		// 위와 같이 쓸 수 있지만 그러면 InputStrema의 유용한 
 		HttpRequest request = new HttpRequest(in);
 		
-		assertEquals("GET", request.getMethod());
+		assertEquals(HttpMethod.GET, request.getMethod());
 		assertEquals("/user/create", request.getPath());
 		assertEquals("keep-alive", request.getHeader("Connection"));
-		assertEquals("javajigi", request.getParameter("userid"));
+		assertEquals("javajigi", request.getParams("userId"));
 	}
 	
 	@Test
@@ -36,10 +37,10 @@ public class HttpRequestTest {
 		InputStream in = new FileInputStream(new File(testDirectory +"HTTP_POST.txt"));
 		HttpRequest request = new HttpRequest(in);
 		
-		assertEquals("POST", request.getMethod());
+		assertEquals(HttpMethod.POST, request.getMethod());
 		assertEquals("/user/create", request.getPath());
 		assertEquals("keep-alive", request.getHeader("Connection"));
-		assertEquals("javajigi", request.getParameter("userid"));
+		assertEquals("javajigi", request.getParams("userId"));
 	}
 	
 	
